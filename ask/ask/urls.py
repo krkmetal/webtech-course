@@ -6,7 +6,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'django.views.defaults.page_not_found', name='home'),
+    url(r'^$', views.test, name='home'),
     url(r'^login/', 'django.views.defaults.page_not_found', name='login'),
     url(r'^signup/', 'django.views.defaults.page_not_found', name='signup'),
     url(r'^question/(?P<qid>\w+)/$', views.test),
