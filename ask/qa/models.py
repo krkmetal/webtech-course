@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from datetime import datetime
 
 class QuestionManager(models.Manager):
     def popular(self):
@@ -9,10 +10,13 @@ class QuestionManager(models.Manager):
     def new(self):
         return self.order_by('-added_at')
 
+    def create(self, *args, **kwargs):
+
+
 class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
-    added_at = models.DateTimeField(blank=True)
+    added_at = models.DateTimeField(auto_now_add=True, blank=True)
     rating = models.IntegerField()
     author = models.ForeignKey(User, null=True,
         on_delete=models.SET_NULL, related_name='questions')
@@ -29,7 +33,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     text = models.TextField()
-    added_at = models.DateTimeField(blank=True)
+    added_at = models.DateTimeField(auto_now_add=True, blank=True)
     question = models.ForeignKey(Question, null=True)
     author = models.ForeignKey(User, null=True,
         on_delete=models.SET_NULL, related_name='answers')
