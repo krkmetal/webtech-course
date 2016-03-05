@@ -2,6 +2,7 @@ import os
 BASE_DIR = os.path.abspath(__file__)
 BASE_DIR = os.path.dirname(BASE_DIR)
 BASE_DIR = os.path.dirname(BASE_DIR)
+BASE_DIR = os.path.dirname(BASE_DIR)
 
 
 SECRET_KEY = 'whl!8d0-9wzh4fbp$rwnp)w8vpwy7oo-tyj!ls$e&p)o8vji@h'
@@ -49,3 +50,4 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = BASE_DIR + '/public/'
+TEMPLATE_DIRS = BASE_DIR + '/templates/'
