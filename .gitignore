@@ -63,3 +63,4 @@ target/
 
 # misc files
 db.sqlite3
+.DS_Store
