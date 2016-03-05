@@ -10,9 +10,6 @@ class QuestionManager(models.Manager):
     def new(self):
         return self.order_by('-added_at')
 
-    def create(self, *args, **kwargs):
-
-
 class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
