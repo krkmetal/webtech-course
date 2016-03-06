@@ -3,9 +3,11 @@ from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpRespo
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from models import Question
-from forms import AskForm, AnswerForm
+from forms import AskForm, AnswerForm, SignupForm
 from django.views.decorators.http import require_POST
 from django.forms.models import modelformset_factory
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 
 
 def test(request, *args, **kwargs):
@@ -56,6 +58,7 @@ def popular(request, *args, **kwargs):
 def question_details(request, qid, *args, **kwargs):
     question = get_object_or_404(Question, id=qid)
     form = AnswerForm(initial={'question': qid})
+    form._user = request.user
     return render(request, 'question_details.html', {
         'question': question,
         'form': form
@@ -65,12 +68,14 @@ def question_details(request, qid, *args, **kwargs):
 def question_add(request):
     if request.method =='POST':
         form = AskForm(request.POST)
+        form._user = request.user
         if form.is_valid():
             question = form.save()
             url = question.get_url()
             return HttpResponseRedirect(url)
     else:
         form = AskForm()
+        form._user = request.user
     return render(request, 'question-add.html', {
         'form': form
         })
@@ -78,9 +83,26 @@ def question_add(request):
 @require_POST
 def answer_question(request):
     form = AnswerForm(request.POST)
+    form._user = request.user
     if form.is_valid():
         answer = form.save()
         url = answer.question.get_url()
         return HttpResponseRedirect(url)
     else:
         return HttpResponseBadRequest()
+
+
+def signup(request):
+    if request.method =='POST':
+        form = SignupForm(request.POST)
+        form._user = request.user
+        if form.is_valid():
+            user = form.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = SignupForm()
+    return render(request, 'signup.html', {
+        'form': form
+        })
