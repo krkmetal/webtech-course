@@ -51,3 +51,8 @@ USE_TZ = True
 
 STATIC_URL = BASE_DIR + '/public/'
 TEMPLATE_DIRS = BASE_DIR + '/templates/'
+
+try:
+    from settings_local import *
+except ImportError:
+    pass
