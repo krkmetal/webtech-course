@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from models import Question
+from forms import AskForm, AnswerForm
+from django.views.decorators.http import require_POST
+from django.forms.models import modelformset_factory
+
 
 def test(request, *args, **kwargs):
     return HttpResponse('OK')
@@ -51,6 +55,32 @@ def popular(request, *args, **kwargs):
 
 def question_details(request, qid, *args, **kwargs):
     question = get_object_or_404(Question, id=qid)
+    form = AnswerForm(initial={'question': qid})
     return render(request, 'question_details.html', {
         'question': question,
+        'form': form
         })
+
+
+def question_add(request):
+    if request.method =='POST':
+        form = AskForm(request.POST)
+        if form.is_valid():
+            question = form.save()
+            url = question.get_url()
+            return HttpResponseRedirect(url)
+    else:
+        form = AskForm()
+    return render(request, 'question-add.html', {
+        'form': form
+        })
+
+@require_POST
+def answer_question(request):
+    form = AnswerForm(request.POST)
+    if form.is_valid():
+        answer = form.save()
+        url = answer.question.get_url()
+        return HttpResponseRedirect(url)
+    else:
+        return HttpResponseBadRequest()

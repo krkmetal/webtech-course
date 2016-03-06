@@ -15,4 +15,9 @@
          </li>
         {% endfor %}
     </ul>
+    <form method="POST" action="{% url 'answer-question' %}">
+    {% csrf_token %}
+    {{ form.as_ul }}
+     <input type="submit" value="Submit">
+     </form>
 {% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}
+{{ block.super }} - Ask a new question
+{% endblock %}
+{% block content %}
+<form method="POST" action="{% url 'question-add' %}">
+{{ form.as_ul }}
+{% csrf_token %}
+ <input type="submit" value="Submit question">
+ </form>
+{% endblock %}
